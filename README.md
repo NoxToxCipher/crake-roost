@@ -89,4 +89,16 @@ library and [libsodium](https://libsodium.org).
 
 ## License
 
-Not yet chosen. Until a license is added, standard copyright applies.
+Copyright (C) 2026 NoxToxCipher
+
+Crake Roost is free software: you can redistribute it and modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version (`GPL-3.0-or-later`). See [LICENSE](LICENSE) for the full text.
+
+It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY,
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE. See the GNU General Public License for details.
+
+This project links [`c-toxcore`](https://github.com/TokTok/c-toxcore), which is
+also GPLv3, and [libsodium](https://libsodium.org), which is ISC licensed.
