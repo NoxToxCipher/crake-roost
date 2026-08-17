@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The dark icon tile, same ground as the launcher icon, so the in-app mark
+     matches the home-screen one in either theme. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#0f1418" />
+    <corners android:radius="13dp" />
+</shape>

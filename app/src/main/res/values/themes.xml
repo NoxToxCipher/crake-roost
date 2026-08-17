@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- DayNight: follows the system, dark-first like the messenger's
+         color-scheme: dark light. Palette resolves from values / values-night. -->
+    <style name="Theme.CrakeRoost" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="android:colorBackground">@color/ground</item>
+        <item name="android:windowBackground">@color/ground</item>
+        <item name="android:textColorPrimary">@color/ink</item>
+        <item name="android:textColorSecondary">@color/ink_dim</item>
+        <item name="android:statusBarColor">@color/ground</item>
+        <item name="android:navigationBarColor">@color/ground</item>
+    </style>
+</resources>

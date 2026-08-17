@@ -1,0 +1,22 @@
+# Android / Gradle build outputs
+/build/
+/app/build/
+/native/build/
+.gradle/
+.cxx/
+.externalNativeBuild/
+
+# Local machine config (contains sdk.dir path)
+local.properties
+
+# IDE
+.idea/
+*.iml
+captures/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Note: app/src/main/jniLibs/**/*.so are prebuilt native deps (libtoxnode, libsodium)
+# and ARE tracked on purpose so the APK builds in Android Studio without the NDK pipeline.

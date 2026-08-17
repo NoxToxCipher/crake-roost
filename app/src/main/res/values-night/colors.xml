@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark palette, from app.css :root (the default). This is the primary look. -->
+<resources>
+    <color name="ground">#0f1418</color>
+    <color name="panel">#171d22</color>
+    <color name="panel2">#1d252b</color>
+    <color name="line">#2a343b</color>
+    <color name="ink">#dde4e8</color>
+    <color name="ink_dim">#93a3ac</color>
+    <color name="accent">#58a6b0</color>
+    <color name="ok">#74a97b</color>
+    <color name="warn">#d9973f</color>
+    <color name="danger">#d66052</color>
+
+    <color name="ok_fill">#1F74A97B</color>
+    <color name="ok_line">#7374A97B</color>
+    <color name="warn_fill">#1FD9973F</color>
+    <color name="warn_line">#73D9973F</color>
+    <color name="danger_fill">#1FD66052</color>
+    <color name="danger_line">#73D66052</color>
+    <color name="neutral_fill">#00000000</color>
+    <color name="neutral_line">#2a343b</color>
+</resources>

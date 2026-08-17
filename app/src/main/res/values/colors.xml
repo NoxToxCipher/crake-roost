@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light palette, from app.css :root light variant. Dark lives in values-night. -->
+<resources>
+    <color name="ground">#e9edf0</color>
+    <color name="panel">#ffffff</color>
+    <color name="panel2">#f2f5f7</color>
+    <color name="line">#ccd6dc</color>
+    <color name="ink">#172028</color>
+    <color name="ink_dim">#536068</color>
+    <color name="accent">#2d7d88</color>
+    <color name="ok">#47804f</color>
+    <color name="warn">#a76c17</color>
+    <color name="danger">#a8402f</color>
+
+    <!-- Chip fills (12%) and borders (45%), matching the CSS .chip rules. -->
+    <color name="ok_fill">#1F47804F</color>
+    <color name="ok_line">#7347804F</color>
+    <color name="warn_fill">#1FA76C17</color>
+    <color name="warn_line">#73A76C17</color>
+    <color name="danger_fill">#1FA8402F</color>
+    <color name="danger_line">#73A8402F</color>
+    <color name="neutral_fill">#00000000</color>
+    <color name="neutral_line">#ccd6dc</color>
+</resources>
