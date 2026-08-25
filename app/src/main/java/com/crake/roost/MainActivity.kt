@@ -2,6 +2,8 @@ package com.crake.roost
 
 import android.Manifest
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,18 +13,21 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
 
 /**
- * One screen: start or stop the node, and show what it honestly knows about its
- * own state. Colour is never the only signal here; every status carries a word.
+ * Main dashboard: control relay node state, monitor verified reachability,
+ * and inspect the persistent DHT public key.
  */
 class MainActivity : Activity() {
 
     private lateinit var statusChip: TextView
     private lateinit var keyView: TextView
+    private lateinit var copyKeyBtn: Button
     private lateinit var toggle: Button
     private val ui = Handler(Looper.getMainLooper())
 
@@ -39,6 +44,7 @@ class MainActivity : Activity() {
 
         statusChip = findViewById(R.id.statusChip)
         keyView = findViewById(R.id.keyView)
+        copyKeyBtn = findViewById(R.id.copyKeyBtn)
         toggle = findViewById(R.id.toggle)
 
         toggle.setOnClickListener {
@@ -46,6 +52,16 @@ class MainActivity : Activity() {
                 RelayService.stop(this)
             } else {
                 RelayService.start(this)
+            }
+        }
+
+        copyKeyBtn.setOnClickListener {
+            copyPublicKeyToClipboard()
+        }
+
+        keyView.setOnClickListener {
+            if (State.publicKey.isNotEmpty()) {
+                copyPublicKeyToClipboard()
             }
         }
 
@@ -59,6 +75,17 @@ class MainActivity : Activity() {
         findViewById<Button>(R.id.batteryBtn).setOnClickListener { requestIgnoreBatteryOptimizations() }
 
         requestNotificationPermission()
+    }
+
+    private fun copyPublicKeyToClipboard() {
+        val key = State.publicKey
+        if (key.isEmpty()) return
+
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Tox Public Key", key)
+        clipboard.setPrimaryClip(clip)
+
+        Toast.makeText(this, getString(R.string.key_copied), Toast.LENGTH_SHORT).show()
     }
 
     private fun requestNotificationPermission() {
@@ -84,21 +111,22 @@ class MainActivity : Activity() {
             State.Phase.STOPPED -> setChip(R.string.status_stopped, R.drawable.chip_neutral, R.color.ink_dim)
             State.Phase.FAILED -> setChip(R.string.status_failed, R.drawable.chip_bad, R.color.danger)
             State.Phase.RUNNING -> when {
-                // A peer connecting in is the only thing that earns the green.
                 State.incoming > 0 -> setChip(R.string.status_reachable, R.drawable.chip_ok, R.color.ok)
-                // Cannot measure: stay honest, do not claim reachable.
                 State.incoming == ToxNode.UNKNOWN -> setChip(R.string.status_running, R.drawable.chip_warn, R.color.warn)
-                // Running, but nobody has reached it yet.
                 else -> setChip(R.string.status_running_idle, R.drawable.chip_warn, R.color.warn)
             }
         }
 
         toggle.setText(if (State.phase == State.Phase.RUNNING) R.string.stop else R.string.start)
 
-        keyView.text = if (State.publicKey.isEmpty()) {
-            getString(R.string.key_none)
+        if (State.publicKey.isEmpty()) {
+            keyView.text = getString(R.string.key_none)
+            keyView.setTextColor(getColor(R.color.ink_dim))
+            copyKeyBtn.visibility = View.GONE
         } else {
-            State.publicKey
+            keyView.text = State.publicKey
+            keyView.setTextColor(getColor(R.color.ink))
+            copyKeyBtn.visibility = View.VISIBLE
         }
     }
 

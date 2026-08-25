@@ -1,32 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Crake Roost</string>
-    <string name="tagline">Run a Tox relay on this device</string>
+    <string name="tagline">Headless Tox Relay &amp; Bootstrap Node</string>
 
-    <string name="start">Start relay</string>
-    <string name="stop">Stop relay</string>
+    <string name="start">Start Relay Node</string>
+    <string name="stop">Stop Relay Node</string>
 
-    <!-- Status carries a shape glyph and a word, so colour is never the only
-         signal. "Running" is deliberately not "Healthy": we have not checked
-         that anyone can reach it. -->
+    <!-- Status labels -->
     <string name="status_stopped">○  Stopped</string>
-    <string name="status_starting">◐  Starting</string>
-    <string name="status_running">●  Running. Reachability not checked</string>
-    <string name="status_running_idle">●  Running. No one has reached it yet</string>
-    <string name="status_reachable">●  Reachable. A peer has connected in</string>
-    <string name="status_failed">▲  Failed to start</string>
+    <string name="status_starting">◐  Initializing...</string>
+    <string name="status_running">●  Active · Reachability pending</string>
+    <string name="status_running_idle">●  Active · Awaiting inbound peers</string>
+    <string name="status_reachable">●  Reachable · Inbound peers connected</string>
+    <string name="status_failed">▲  Failed to bind ports</string>
 
-    <string name="key_label">This node\'s key</string>
-    <string name="key_none">Not running</string>
+    <string name="key_label">Node Public Key</string>
+    <string name="key_none">Node inactive (start to generate or load key)</string>
+    <string name="copy_key">Copy Public Key</string>
+    <string name="key_copied">Public key copied to clipboard</string>
 
-    <string name="start_on_boot">Start when the phone boots</string>
-    <string name="battery">Keep it alive: exempt from battery optimisation</string>
+    <string name="ports_label">Listening Endpoints</string>
+    <string name="ports_value">UDP 33445 (DHT) · TCP 443, 3389, 33445</string>
 
-    <string name="channel_name">Relay node</string>
-    <string name="channel_desc">Shows that the relay is running</string>
+    <string name="settings_label">Node Preferences</string>
+    <string name="start_on_boot">Launch automatically on device boot</string>
+    <string name="battery">Exempt from OS Battery Optimization</string>
 
-    <!-- Broadcast so others can see this is a Crake node. -->
-    <string name="motd">Crake Roost</string>
+    <string name="channel_name">Tox Relay Service</string>
+    <string name="channel_desc">Maintains the background Tox relay and DHT node</string>
 
-    <string name="reach_note">Running is not the same as reachable. A relay behind a home NAT relays nothing until its port is forwarded, and it cannot be reached at all behind carrier NAT. The status above stays amber until a peer actually connects in, then turns green. That green is earned, not assumed.</string>
+    <string name="motd">Crake Roost Relay Node</string>
+
+    <string name="reach_title">Reachability &amp; Transparency</string>
+    <string name="reach_note">Running is not the same as reachable. A relay behind home NAT forwards nothing until its ports are forwarded on the router, and cannot accept inbound traffic behind CGNAT. The status badge stays amber until an external peer connects in, then switches to green. Green is earned, never assumed.</string>
 </resources>

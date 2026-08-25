@@ -31,11 +31,9 @@ ciphertext.
 Roost never shows a green "working" light it has not earned. The status chip has
 three states:
 
-- **Amber, "Running. No one has reached it yet"** the node is up but no peer has
-  connected in
-- **Green, "Reachable. A peer has connected in"** at least one peer has actually
-  reached the relay from outside, proven by the relay's received-packet count
-- **Amber, "Reachability not checked"** the count could not be read
+- **Amber, "Active · Awaiting inbound peers"**: the node is up and taking part in the DHT, but no peer has connected in yet
+- **Green, "Reachable · Inbound peers connected"**: at least one peer has actually reached the relay from outside, proven by the relay's received-packet count
+- **Amber, "Active · Reachability pending"**: the reachability metric is initializing or could not be measured
 
 Green is earned, not assumed. Behind a home NAT with no port forwarding the chip
 stays amber, because that is the truth: the node runs, but the wider internet
