@@ -23,6 +23,9 @@ ciphertext.
 - **Bootstrap node** so new clients can find the DHT
 - **UDP DHT node** taking part in Tox's distributed hash table
 - **TCP relay** so peers behind restrictive networks can still connect
+- **Automatic UPnP port mapping** requests IGD port forwarding from local home routers
+- **Live telemetry dashboard** monitors real-time uptime, inbound/outbound packets, and router mapping
+- **24/7 Thermal safeguards** monitors battery temperature and adapts iteration pacing if hot
 - Runs as a foreground service with a wakelock, optionally starting on boot
 - Generates and stores its own DHT keypair on the device (never cloud-backed)
 

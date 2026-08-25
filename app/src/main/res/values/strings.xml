@@ -19,6 +19,24 @@
     <string name="copy_key">Copy Public Key</string>
     <string name="key_copied">Public key copied to clipboard</string>
 
+    <!-- Telemetry -->
+    <string name="telemetry_label">Live Network Telemetry</string>
+    <string name="uptime_label">Uptime</string>
+    <string name="traffic_label">Traffic (In / Out)</string>
+    <string name="traffic_value">%1$d pkts in · %2$d pkts out</string>
+    <string name="upnp_label">Router UPnP Port Mapping</string>
+    <string name="upnp_discovering">Discovering local gateway...</string>
+    <string name="upnp_success">Port 33445 mapped successfully</string>
+    <string name="upnp_success_ip">Mapped (%s)</string>
+    <string name="upnp_failed">Manual forward required (%s)</string>
+
+    <!-- Thermal & Battery -->
+    <string name="thermal_label">Battery &amp; Thermal Protection</string>
+    <string name="thermal_normal">%1$.1f°C · %2$d%% · %3$s</string>
+    <string name="thermal_hot">⚠️ %1$.1f°C · Battery hot (throttling loop)</string>
+    <string name="thermal_charging">Plugged In</string>
+    <string name="thermal_battery">On Battery</string>
+
     <string name="ports_label">Listening Endpoints</string>
     <string name="ports_value">UDP 33445 (DHT) · TCP 443, 3389, 33445</string>
 
@@ -32,5 +50,5 @@
     <string name="motd">Crake Roost Relay Node</string>
 
     <string name="reach_title">Reachability &amp; Transparency</string>
-    <string name="reach_note">Running is not the same as reachable. A relay behind home NAT forwards nothing until its ports are forwarded on the router, and cannot accept inbound traffic behind CGNAT. The status badge stays amber until an external peer connects in, then switches to green. Green is earned, never assumed.</string>
+    <string name="reach_note">Running is not the same as reachable. A relay behind home NAT forwards nothing until its ports are reachable from the outside. The status badge stays amber until an external peer connects in, then switches to green. Green is earned, never assumed.</string>
 </resources>

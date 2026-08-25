@@ -14,14 +14,9 @@ import java.io.File
 import kotlin.concurrent.thread
 
 /**
- * Runs the Tox node in the foreground so Android keeps it alive. The node loop
- * lives on its own thread; the service just owns its lifetime and reports status
- * through a persistent notification.
- *
- * Honesty note: "Running" is not "Reachable". A node can be up and still be
- * unreachable behind a NAT, in which case it relays nothing. Until a reachability
- * check exists, the notification says running, never healthy, so the app does not
- * claim something it has not verified.
+ * Runs the Tox relay node as an Android foreground service.
+ * Manages the native node iteration loop, automatic UPnP port mappings,
+ * and 24/7 hardware battery thermal safeguards.
  */
 class RelayService : Service() {
 
@@ -29,6 +24,7 @@ class RelayService : Service() {
     @Volatile private var running = false
     private var loop: Thread? = null
     private var wakeLock: PowerManager.WakeLock? = null
+    private var thermalMonitor: ThermalMonitor? = null
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -42,6 +38,17 @@ class RelayService : Service() {
         wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "roost:node").apply { acquire() }
 
         running = true
+        State.startTimeMs = System.currentTimeMillis()
+
+        // Start hardware thermal monitoring
+        thermalMonitor = ThermalMonitor(this).apply {
+            start { status ->
+                State.batteryTempC = status.temperatureCelsius
+                State.batteryLevel = status.levelPercent
+                State.isOverheating = status.isOverheating
+            }
+        }
+
         loop = thread(name = "roost-node") { runNode() }
         return START_STICKY
     }
@@ -73,6 +80,21 @@ class RelayService : Service() {
         State.phase = State.Phase.RUNNING
         update(getString(R.string.status_running))
 
+        // Trigger automatic UPnP port forwarding asynchronously
+        thread(name = "roost-upnp") {
+            State.upnpStatus = getString(R.string.upnp_discovering)
+            val result = Upnp.tryForwardPorts(listOf(33445 to "UDP", 33445 to "TCP", 3389 to "TCP"))
+            State.upnpStatus = if (result.success) {
+                if (result.externalIp.isNotEmpty()) {
+                    getString(R.string.upnp_success_ip, result.externalIp)
+                } else {
+                    getString(R.string.upnp_success)
+                }
+            } else {
+                getString(R.string.upnp_failed, result.details)
+            }
+        }
+
         for (s in SEEDS) {
             node.bootstrap(s.host, s.port, s.key)
         }
@@ -80,8 +102,17 @@ class RelayService : Service() {
         while (running) {
             val sleepMs = node.iterate()
             State.incoming = node.incomingPackets()
+            State.outgoing = node.outgoingPackets()
+
+            // Adaptive thermal throttle if battery is overheating
+            val actualDelay = if (State.isOverheating) {
+                (sleepMs * 4).toLong().coerceIn(100, 2000)
+            } else {
+                sleepMs.toLong().coerceIn(1, 1000)
+            }
+
             try {
-                Thread.sleep(sleepMs.toLong().coerceIn(1, 1000))
+                Thread.sleep(actualDelay)
             } catch (_: InterruptedException) {
                 break
             }
@@ -94,9 +125,14 @@ class RelayService : Service() {
         running = false
         loop?.interrupt()
         loop?.join(2000)
+        thermalMonitor?.stop()
+        thermalMonitor = null
         wakeLock?.let { if (it.isHeld) it.release() }
         State.phase = State.Phase.STOPPED
         State.incoming = 0
+        State.outgoing = 0
+        State.startTimeMs = 0L
+        State.upnpStatus = ""
         super.onDestroy()
     }
 
@@ -153,14 +189,31 @@ class RelayService : Service() {
     }
 }
 
-/** Shared, honestly-scoped view of node state for the UI. */
+/** Shared, live view of node state and telemetry for the UI. */
 object State {
     enum class Phase { STOPPED, RUNNING, FAILED }
 
     @Volatile var phase: Phase = Phase.STOPPED
     @Volatile var publicKey: String = ""
 
-    /** Relay packets received from peers reaching in. `-1` = not measurable.
-     * `0` = nobody has connected yet. `> 0` = provably reachable. */
+    /** Packets received from external peers. `> 0` = provably reachable. */
     @Volatile var incoming: Long = 0
+
+    /** Packets transmitted to peers. */
+    @Volatile var outgoing: Long = 0
+
+    /** Startup timestamp for live uptime tracking. */
+    @Volatile var startTimeMs: Long = 0L
+
+    /** Router UPnP mapping status string. */
+    @Volatile var upnpStatus: String = ""
+
+    /** Live hardware battery temperature in degrees Celsius. */
+    @Volatile var batteryTempC: Float = 0f
+
+    /** Live battery level percentage. */
+    @Volatile var batteryLevel: Int = 0
+
+    /** Thermal throttle trigger flag. */
+    @Volatile var isOverheating: Boolean = false
 }

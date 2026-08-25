@@ -108,9 +108,15 @@ Java_com_crake_roost_ToxNode_nativeIncoming(JNIEnv *env, jobject thiz, jlong han
 {
     (void)env;
     (void)thiz;
-    /* UINT64_MAX ("unknown") maps to jlong -1, which the Kotlin side reads as
-     * "cannot measure" rather than a count. */
     return (jlong)toxnode_incoming_packets((ToxNode *)(intptr_t)handle);
+}
+
+JNIEXPORT jlong JNICALL
+Java_com_crake_roost_ToxNode_nativeOutgoing(JNIEnv *env, jobject thiz, jlong handle)
+{
+    (void)env;
+    (void)thiz;
+    return (jlong)toxnode_outgoing_packets((ToxNode *)(intptr_t)handle);
 }
 
 JNIEXPORT void JNICALL

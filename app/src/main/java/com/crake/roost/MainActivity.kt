@@ -21,7 +21,7 @@ import android.widget.Toast
 
 /**
  * Main dashboard: control relay node state, monitor verified reachability,
- * and inspect the persistent DHT public key.
+ * inspect live network telemetry, and monitor hardware thermal safeguards.
  */
 class MainActivity : Activity() {
 
@@ -29,6 +29,11 @@ class MainActivity : Activity() {
     private lateinit var keyView: TextView
     private lateinit var copyKeyBtn: Button
     private lateinit var toggle: Button
+    private lateinit var telemetryCard: View
+    private lateinit var uptimeView: TextView
+    private lateinit var trafficView: TextView
+    private lateinit var upnpView: TextView
+    private lateinit var thermalView: TextView
     private val ui = Handler(Looper.getMainLooper())
 
     private val poll = object : Runnable {
@@ -46,6 +51,11 @@ class MainActivity : Activity() {
         keyView = findViewById(R.id.keyView)
         copyKeyBtn = findViewById(R.id.copyKeyBtn)
         toggle = findViewById(R.id.toggle)
+        telemetryCard = findViewById(R.id.telemetryCard)
+        uptimeView = findViewById(R.id.uptimeView)
+        trafficView = findViewById(R.id.trafficView)
+        upnpView = findViewById(R.id.upnpView)
+        thermalView = findViewById(R.id.thermalView)
 
         toggle.setOnClickListener {
             if (State.phase == State.Phase.RUNNING) {
@@ -123,10 +133,45 @@ class MainActivity : Activity() {
             keyView.text = getString(R.string.key_none)
             keyView.setTextColor(getColor(R.color.ink_dim))
             copyKeyBtn.visibility = View.GONE
+            telemetryCard.visibility = View.GONE
         } else {
             keyView.text = State.publicKey
             keyView.setTextColor(getColor(R.color.ink))
             copyKeyBtn.visibility = View.VISIBLE
+            telemetryCard.visibility = View.VISIBLE
+        }
+
+        // Render live telemetry
+        if (State.phase == State.Phase.RUNNING && State.startTimeMs > 0L) {
+            val elapsedSec = (System.currentTimeMillis() - State.startTimeMs) / 1000
+            val hours = elapsedSec / 3600
+            val minutes = (elapsedSec % 3600) / 60
+            val seconds = elapsedSec % 60
+            uptimeView.text = String.format("%02dh %02dm %02ds", hours, minutes, seconds)
+
+            val inPkts = if (State.incoming == ToxNode.UNKNOWN) 0 else State.incoming
+            val outPkts = if (State.outgoing == ToxNode.UNKNOWN) 0 else State.outgoing
+            trafficView.text = getString(R.string.traffic_value, inPkts, outPkts)
+
+            upnpView.text = if (State.upnpStatus.isNotEmpty()) State.upnpStatus else "--"
+        }
+
+        // Render battery & thermal status
+        if (State.batteryTempC > 0f) {
+            val chargeState = if (State.batteryLevel >= 100) {
+                getString(R.string.thermal_charging)
+            } else {
+                getString(R.string.thermal_battery)
+            }
+            if (State.isOverheating) {
+                thermalView.text = getString(R.string.thermal_hot, State.batteryTempC)
+                thermalView.setTextColor(getColor(R.color.danger))
+            } else {
+                thermalView.text = getString(R.string.thermal_normal, State.batteryTempC, State.batteryLevel, chargeState)
+                thermalView.setTextColor(getColor(R.color.ink))
+            }
+        } else {
+            thermalView.text = "--"
         }
     }
 

@@ -48,7 +48,11 @@ class ToxNode {
      * is honest proof of reachability. [Reach.UNKNOWN] (-1) means it cannot be
      * measured and must never be read as reachable.
      */
+    /** Packets the relay has received from peers reaching in. */
     fun incomingPackets(): Long = if (handle != 0L) nativeIncoming(handle) else 0L
+
+    /** Packets the relay has sent out to peers. */
+    fun outgoingPackets(): Long = if (handle != 0L) nativeOutgoing(handle) else 0L
 
     fun stop() {
         if (handle != 0L) {
@@ -66,6 +70,7 @@ class ToxNode {
     private external fun nativeIterate(handle: Long): Int
     private external fun nativeSelfPublicKey(handle: Long): String
     private external fun nativeIncoming(handle: Long): Long
+    private external fun nativeOutgoing(handle: Long): Long
     private external fun nativeStop(handle: Long)
 
     companion object {

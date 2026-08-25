@@ -274,6 +274,21 @@ uint64_t toxnode_incoming_packets(ToxNode *node)
     return netprof_get_packet_count_total(profile, PACKET_DIRECTION_RECV);
 }
 
+uint64_t toxnode_outgoing_packets(ToxNode *node)
+{
+    if (node == NULL || node->tcp_server == NULL) {
+        return UINT64_MAX;
+    }
+
+    const Net_Profile *profile = tcp_server_get_net_profile(node->tcp_server);
+
+    if (profile == NULL) {
+        return UINT64_MAX;
+    }
+
+    return netprof_get_packet_count_total(profile, PACKET_DIRECTION_SENT);
+}
+
 void toxnode_stop(ToxNode *node)
 {
     if (node == NULL) {

@@ -56,6 +56,9 @@ void toxnode_self_public_key_hex(ToxNode *node, char *out);
  * never as reachable. */
 uint64_t toxnode_incoming_packets(ToxNode *node);
 
+/* Packets the TCP relay has transmitted to peers. */
+uint64_t toxnode_outgoing_packets(ToxNode *node);
+
 /* Stop and free the node. */
 void toxnode_stop(ToxNode *node);
 
