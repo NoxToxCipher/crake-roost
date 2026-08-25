@@ -59,7 +59,7 @@ that is relaying traffic.
   privileged, so Roost binds only high ports (for example 33445 and 3389). A
   phone relay adds capacity but cannot serve the 443 censorship-circumvention
   path that a VPS relay can.
-- Native libraries currently build for `arm64-v8a` and `x86_64`.
+- Native libraries target `arm64-v8a` (modern 64-bit phones), `armeabi-v7a` (older 32-bit devices), and `x86_64` (emulators).
 - `minSdk 26`, `targetSdk 34`.
 
 ## Build
